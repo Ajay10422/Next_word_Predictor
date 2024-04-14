@@ -46,7 +46,7 @@ jQuery(document).ready(function () {
             dataType: "json",
             data: JSON.stringify({
                 "input_text": $('#mask_input_text').val(),
-                "top_k": slider_mask.val(),
+                "top_k": 5,
             }),
             beforeSend: function () {
                 $('.overlay').show()
