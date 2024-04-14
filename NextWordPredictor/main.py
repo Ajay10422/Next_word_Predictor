@@ -51,4 +51,4 @@ def get_sentence_predictions(text_sentence, top_clean=5):
 
     return {
             'bart': bart,
-            }
+    }
