@@ -51,16 +51,15 @@ def get_sentence_predictions(text_sentence):
      #######################GPT2 Correction########################
     input_ids = GPT_tokenizer.encode(text_sentence, return_tensors="pt")
 
-    num_outputs = 4  # Number of outputs to generate
+    num_outputs = 4  
     generated_texts = []
 
     for _ in range(num_outputs):
 
-        # Generate text using the fine-tuned GPT-2 model
         output = GPT_model.generate(input_ids, 
                                 max_length=20, 
                                 num_return_sequences=1,
-                                do_sample=True,  # Enable sampling
+                                do_sample=True,  
                                 top_k=50,  
                                 pad_token_id=GPT_tokenizer.eos_token_id)
 
