@@ -6,14 +6,10 @@ import string
 from transformers import GPT2LMHeadModel, GPT2Tokenizer
 from transformers import BartTokenizer, BartForConditionalGeneration
 bart_model = BartForConditionalGeneration.from_pretrained(r"NextWordPredictor\Models\FT_BART").eval()
-bart_tokenizer = BartTokenizer.from_pretrained(r"NextWordPredictor\Models\Tokens_BART")
+bart_tokenizer = BartTokenizer.from_pretrained(r"NextWordPredictor\Models\Token_BART")
 
 GPT_model = GPT2LMHeadModel.from_pretrained(r"NextWordPredictor\Models\FT_GPT2")
-GPT_tokenizer = GPT2Tokenizer.from_pretrained(r"NextWordPredictor\Models\Tokens_GPT2")
-
-from happytransformer import TTSettings
-from autocorrect import Speller
-from happytransformer import HappyTextToText
+GPT_tokenizer = GPT2Tokenizer.from_pretrained(r"NextWordPredictor\Models\Token_GPT2")
 
 top_k = 10
 
@@ -52,30 +48,8 @@ def get_all_predictions(text_sentence, top_clean=5):
 
 def get_sentence_predictions(text_sentence):
     
-   
-    input_text=text_sentence
-    ##########################Correction###############################
-
-    happy_tt = HappyTextToText("T5", "t5-base")
-
-
-    happy_tt.model = happy_tt.model.from_pretrained(r"NextWordPredictor\Models\FT_T5")
-
-    text_sentence="grammar: "+text_sentence
-
-    beam_settings =  TTSettings(num_beams=5, min_length=1, max_length=20)
-
-    result_1 = happy_tt.generate_text(text_sentence, args=beam_settings)
-
-    spell = Speller(lang='en')
-
-    # Correct the spellings
-    text_sentence = spell(result_1.text)
-
-    Corrected_sentence="T5 Grammar and Spelling Corrected: "+text_sentence
-
-    #######################Grammar Correction########################
-    input_ids = GPT_tokenizer.encode(input_text, return_tensors="pt")
+     #######################GPT2 Correction########################
+    input_ids = GPT_tokenizer.encode(text_sentence, return_tensors="pt")
 
     num_outputs = 4  # Number of outputs to generate
     generated_texts = []
@@ -84,7 +58,7 @@ def get_sentence_predictions(text_sentence):
 
         # Generate text using the fine-tuned GPT-2 model
         output = GPT_model.generate(input_ids, 
-                                max_length=100, 
+                                max_length=20, 
                                 num_return_sequences=1,
                                 do_sample=True,  # Enable sampling
                                 top_k=50,  
@@ -103,9 +77,7 @@ def get_sentence_predictions(text_sentence):
         generated_texts.append(generated_text)
 
     filtered_Text="\n".join(generated_texts)
-    filtered_Text="GPT2 Generated Texts"+"\n"+filtered_Text
-    Final_result=Corrected_sentence+"\n"+filtered_Text
 
     return {
-            'bart': Final_result
+            'bart': filtered_Text
     }
