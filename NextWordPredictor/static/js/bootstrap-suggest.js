@@ -19,7 +19,7 @@
 
 (function ($) {
 
-    "use strict"; // jshint ;_;
+    "use strict"; 
 
     var Suggest = function(el, key, options) {
         var that = this;
@@ -56,19 +56,13 @@
         },
 
         __getCaretPos: function(posStart) {
-            // https://github.com/component/textarea-caret-position/blob/master/index.js
-
-            // The properties that we copy into a mirrored div.
-            // Note that some browsers, such as Firefox,
-            // do not concatenate properties, i.e. padding-top, bottom etc. -> padding,
-            // so we have to do every single property specifically.
             var properties = [
-                'direction',  // RTL support
+                'direction',  
                 'boxSizing',
-                'width',  // on Chrome and IE, exclude the scrollbar, so the mirror div wraps exactly as the textarea does
+                'width',  
                 'height',
                 'overflowX',
-                'overflowY',  // copy the scrollbar for IE
+                'overflowY',  
 
                 'borderTopWidth',
                 'borderRightWidth',
@@ -80,7 +74,6 @@
                 'paddingBottom',
                 'paddingLeft',
 
-                // https://developer.mozilla.org/en-US/docs/Web/CSS/font
                 'fontStyle',
                 'fontVariant',
                 'fontWeight',
@@ -93,7 +86,7 @@
                 'textAlign',
                 'textTransform',
                 'textIndent',
-                'textDecoration',  // might not make a difference, but better be safe
+                'textDecoration',  
 
                 'letterSpacing',
                 'wordSpacing'
@@ -113,37 +106,29 @@
                 // default textarea styles
                 style.whiteSpace = 'pre-wrap';
                 if (element.nodeName !== 'INPUT')
-                style.wordWrap = 'break-word';  // only for textarea-s
+                style.wordWrap = 'break-word';  
 
                 // position off-screen
-                style.position = 'absolute';  // required to return coordinates properly
-                style.visibility = 'hidden';  // not 'display: none' because we want rendering
-
-                // transfer the element's properties to the div
+                style.position = 'absolute';  
+                style.visibility = 'hidden';  
+                
                 $.each(properties, function (index, value) {
                     style[value] = computed[value];
                 });
 
                 if (isFirefox) {
-                    style.width = parseInt(computed.width) - 2 + 'px';  // Firefox adds 2 pixels to the padding - https://bugzilla.mozilla.org/show_bug.cgi?id=753662
-                    // Firefox lies about the overflow property for textareas: https://bugzilla.mozilla.org/show_bug.cgi?id=984275
+                    style.width = parseInt(computed.width) - 2 + 'px';  
                     if (element.scrollHeight > parseInt(computed.height))
                     style.overflowY = 'scroll';
                 } else {
-                    style.overflow = 'hidden';  // for Chrome to not render a scrollbar; IE keeps overflowY = 'scroll'
+                    style.overflow = 'hidden';  
                 }
 
                 div.textContent = element.value.substring(0, position);
-                // the second special handling for input type="text" vs textarea: spaces need to be replaced with non-breaking spaces - http://stackoverflow.com/a/13402035/1269037
                 if (element.nodeName === 'INPUT')
                 div.textContent = div.textContent.replace(/\s/g, "\u00a0");
 
                 var span = document.createElement('span');
-                // Wrapping must be replicated *exactly*, including when a long word gets
-                // onto the next line, with whitespace at the end of the line before (#7).
-                // The  *only* reliable way to do that is to copy the *entire* rest of the
-                // textarea's content into the <span> created at the caret position.
-                // for inputs, just '.' would be enough, but why bother?
                 span.textContent = element.value.substring(position) || '.';  // || because a completely empty faux span doesn't render at all
                 div.appendChild(span);
 
@@ -161,8 +146,6 @@
         },
 
         __keyup: function(e) {
-            // don't query special characters
-            // http://mikemurko.com/general/jquery-keycode-cheatsheet/
             var specialChars = [38, 40, 37, 39, 17, 18, 9, 16, 20, 91, 93, 36, 35, 45, 33, 34, 144, 112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122, 123, 145, 19];
             switch (e.keyCode) {
                 case 27: // escape
@@ -179,15 +162,12 @@
                 currentPos = this.__getSelection($el.get(0)).start;
 
             for (var i = currentPos; i >= 0; i--) {
-                // var subChar = $.trim(val.substring(i-1, i));
                 var subChar = val.substring(i-1, i);
-                // console.log(subChar)
                 if (!subChar) {
                     this.hide();
                     break;
                 }
 
-                // if (subChar === this.key && $.trim(val.substring(i-2, i-1)) == '') {
                 if (subChar === this.key) {
                     this.query = val.substring(i, currentPos);
                     this._queryPos = [i, currentPos];
@@ -329,9 +309,6 @@
         },
 
         __getSelection: function (el) {
-            //in IE9 selectionStart will always be 9 if not focused(when selecting using the mouse)
-            // el.focus();
-
             return {
                 start: el.selectionStart,
                 end: el.selectionEnd
@@ -494,9 +471,6 @@
 
     var old = $.fn.suggest;
 
-    // .suggest( key [, options] )
-    // .suggest( method [, options] )
-    // .suggest( suggestions )
     $.fn.suggest = function(arg1) {
         var arg2 = arguments[1],
             arg3 = arguments[2];
@@ -506,8 +480,6 @@
             $.each(suggestions, function(keyChar, options) {
                 var key =  keyChar.toString().charAt(0);
 
-                // remove existing suggest
-                // $('.suggest.dropdown[data-key="'+key+'"]').remove();
                 newData[key] = new Suggest(el, key, typeof options === 'object' && options);
             });
 

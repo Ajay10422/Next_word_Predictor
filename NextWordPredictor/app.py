@@ -28,9 +28,7 @@ def get_prediction_eos():
 def get_prediction_mask():
     try:
         input_text = ' '.join(request.json['input_text'].split())
-        input_text += ' <mask>'
-        top_k = 5
-        res = main.get_all_predictions(input_text, top_clean=int(top_k))
+        res = main.get_sentence_predictions(input_text)
         return app.response_class(response=json.dumps(res), status=200, mimetype='application/json')
     except Exception as error:
         err = str(error)
