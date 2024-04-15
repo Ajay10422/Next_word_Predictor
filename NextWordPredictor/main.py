@@ -2,13 +2,14 @@
 import torch
 import string
 
+
 from transformers import GPT2LMHeadModel, GPT2Tokenizer
 from transformers import BartTokenizer, BartForConditionalGeneration
-bart_model = BartForConditionalGeneration.from_pretrained(r"C:\Users\ajayk\OneDrive\Desktop\backup\Capstone1.pkl").eval()
-bart_tokenizer = BartTokenizer.from_pretrained(r"C:\Users\ajayk\OneDrive\Desktop\Tokens")
+bart_model = BartForConditionalGeneration.from_pretrained(r"NextWordPredictor\Models\Capstone_BART.pkl").eval()
+bart_tokenizer = BartTokenizer.from_pretrained(r"NextWordPredictor\Models\Tokens_BART")
 
-GPT_model = GPT2LMHeadModel.from_pretrained(r"C:\Users\ajayk\OneDrive\Desktop\Capstone.pkl")
-GPT_tokenizer = GPT2Tokenizer.from_pretrained(r"C:\Users\ajayk\OneDrive\Desktop\TokensGPT")
+GPT_model = GPT2LMHeadModel.from_pretrained(r"NextWordPredictor\Models\Capstone_GPT.pkl")
+GPT_tokenizer = GPT2Tokenizer.from_pretrained(r"NextWordPredictor\Models\TokensGPT")
 
 from happytransformer import TTSettings
 from autocorrect import Speller
@@ -52,7 +53,7 @@ def get_all_predictions(text_sentence, top_clean=5):
 def get_sentence_predictions(text_sentence):
     
    
-
+    input_text=text_sentence
     ##########################Correction###############################
 
     happy_tt = HappyTextToText("T5", "t5-base")
@@ -61,8 +62,8 @@ def get_sentence_predictions(text_sentence):
     happy_tt.model = happy_tt.model.from_pretrained(r"C:\Users\ajayk\OneDrive\Desktop\Grammarcorrection")
 
     text_sentence="grammar: "+text_sentence
-    
-    beam_settings =  TTSettings(num_beams=5, min_length=1, max_length=len(text_sentence))
+
+    beam_settings =  TTSettings(num_beams=5, min_length=1, max_length=20)
 
     result_1 = happy_tt.generate_text(text_sentence, args=beam_settings)
 
@@ -74,7 +75,7 @@ def get_sentence_predictions(text_sentence):
     Corrected_sentence="T5 Grammar and Spelling Corrected: "+text_sentence
 
     #######################Grammar Correction########################
-    input_ids = GPT_tokenizer.encode(text_sentence, return_tensors="pt")
+    input_ids = GPT_tokenizer.encode(input_text, return_tensors="pt")
 
     num_outputs = 4  # Number of outputs to generate
     generated_texts = []
