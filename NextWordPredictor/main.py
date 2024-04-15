@@ -5,11 +5,11 @@ import string
 
 from transformers import GPT2LMHeadModel, GPT2Tokenizer
 from transformers import BartTokenizer, BartForConditionalGeneration
-bart_model = BartForConditionalGeneration.from_pretrained(r"NextWordPredictor\Models\Capstone_BART.pkl").eval()
+bart_model = BartForConditionalGeneration.from_pretrained(r"NextWordPredictor\Models\FT_BART").eval()
 bart_tokenizer = BartTokenizer.from_pretrained(r"NextWordPredictor\Models\Tokens_BART")
 
-GPT_model = GPT2LMHeadModel.from_pretrained(r"NextWordPredictor\Models\Capstone_GPT.pkl")
-GPT_tokenizer = GPT2Tokenizer.from_pretrained(r"NextWordPredictor\Models\TokensGPT")
+GPT_model = GPT2LMHeadModel.from_pretrained(r"NextWordPredictor\Models\FT_GPT2")
+GPT_tokenizer = GPT2Tokenizer.from_pretrained(r"NextWordPredictor\Models\Tokens_GPT2")
 
 from happytransformer import TTSettings
 from autocorrect import Speller
@@ -59,7 +59,7 @@ def get_sentence_predictions(text_sentence):
     happy_tt = HappyTextToText("T5", "t5-base")
 
 
-    happy_tt.model = happy_tt.model.from_pretrained(r"C:\Users\ajayk\OneDrive\Desktop\Grammarcorrection")
+    happy_tt.model = happy_tt.model.from_pretrained(r"NextWordPredictor\Models\FT_T5")
 
     text_sentence="grammar: "+text_sentence
 
